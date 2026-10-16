@@ -1,0 +1,12 @@
+
+.DS_Store
+.vscode/
+.idea/
+
+*.py[ocd]
+*.npy
+*.zip
+*.tar
+*.tar.gz
+__pycache__/
+
