@@ -1,6 +1,7 @@
 
 
-is_simple_core = True
+# is_simple_core = True
+is_simple_core = False
 
 if is_simple_core:
     from dezero.core_simple import Variable
@@ -19,6 +20,7 @@ else:
     from dezero.core import as_array
     from dezero.core import as_variable
     from dezero.core import setup_variable
+    from dezero.core import add, sub, mul, div, pow
 
 
 setup_variable()

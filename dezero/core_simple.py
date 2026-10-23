@@ -78,16 +78,16 @@ class Variable:
         while funcs:
             f = funcs.pop()
             # gys = [output.grad for output in f.outputs]
-            # gys = [output().grad for output in f.outputs]
-            # A multi-output Function may have an unused (or already freed) output.
-            # That output contributes zero to the gradient of the current result.
+            gys = [output().grad for output in f.outputs]
+            '''
             gys = []
             for output_ref, (shape, dtype) in zip(f.outputs, f.output_specs):
                 output = output_ref()
-                if output is None or output.grad is None:
-                    gys.append(np.zeros(shape, dtype=dtype))
-                else:
-                    gys.append(output.grad)
+                gy = None if output is None else output.grad
+                if gy is None:
+                    gy = np.zeros(shape, dtype=dtype)
+                gys.append(gy)
+            '''
 
             gxs = f.backward(*gys)
             if not isinstance(gxs, tuple):
@@ -100,13 +100,15 @@ class Variable:
                 if x.creator is not None:
                     add_func(x.creator)
             if not retain_grad:
-                # for y in f.outputs:
-                #     y().grad = None
+                for y in f.outputs:
+                    y().grad = None
+            '''
+            if not retain_grad:
                 for output_ref in f.outputs:
                     output = output_ref()
                     if output is not None:
                         output.grad = None
-
+            '''
 
 class Function(object):
     def __call__(self, *inputs):
@@ -291,3 +293,11 @@ if __name__ == '__main__':
     assert y.data == 2.0
     assert x.grad == -1.0
 
+    # TODO: 广播的反向传播尚未实现，后续学习 sum_to 时处理
+    x = Variable(np.ones((2, 3)))
+    b = Variable(np.ones(3))
+    y = x + b
+    y.backward()
+    print(x)
+    print(b)
+    print(y)
