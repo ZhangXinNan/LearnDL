@@ -28,7 +28,8 @@ for i in range(iters):
 
     # x0.data = x0.data - lr * x0.grad
     # x1.data = x1.data - lr * x1.grad
-    x0.data -= lr * x0.grad
-    x1.data -= lr * x1.grad
-
+    # x0.data -= lr * x0.grad
+    # x1.data -= lr * x1.grad
+    x0.data -= lr * x0.grad.data
+    x1.data -= lr * x1.grad.data
 

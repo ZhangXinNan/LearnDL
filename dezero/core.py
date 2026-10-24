@@ -81,7 +81,7 @@ class Variable:
             # gys = [output.grad for output in f.outputs]
             gys = [output().grad for output in f.outputs]
 
-            while using_config('enable_backprop', create_graph):
+            with using_config('enable_backprop', create_graph):
                 gxs = f.backward(*gys)
                 if not isinstance(gxs, tuple):
                     gxs = (gxs,)
@@ -130,7 +130,10 @@ class Square(Function):
         return x ** 2
 
     def backward(self, gy):
-        x = self.inputs[0].data
+        # 只使用 NumPy 数据：丢失对原变量 x 的可微依赖
+        # x = self.inputs[0].data
+        # 使用 Variable：可以继续构建梯度计算图
+        x = self.inputs[0]
         gx = 2 * x * gy
         return gx
 
@@ -199,7 +202,8 @@ class Div(Function):
         y = x0 / x1
         return y
     def backward(self, gy):
-        x0, x1 = self.inputs[0].data, self.inputs[1].data
+        # x0, x1 = self.inputs[0].data, self.inputs[1].data
+        x0, x1 = self.inputs
         gx0 = gy / x1
         gx1 = gy * (-x0 / x1 ** 2)
         return gx0, gx1
@@ -221,7 +225,8 @@ class Pow(Function):
         y = x ** self.c
         return y
     def backward(self, gy):
-        x = self.inputs[0].data
+        # x = self.inputs[0].data
+        x = self.inputs[0]
         c = self.c
         gx = c * x ** (c - 1) * gy
         return gx
