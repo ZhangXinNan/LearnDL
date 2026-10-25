@@ -14,17 +14,25 @@ import numpy as npfrom dezero import Variablex = Variable(np.array(2.0))a = x * 
 
 它对应的数学表达式为：
 
-\\[ a=x^2,\qquad y=a^2=x^4 \\]
+$$
+a=x^2,\qquad y=a^2=x^4
+$$
 
-当 \\(x=2\\) 时：
+当 $x=2$ 时：
 
-\\[ x=2,\quad a=4,\quad y=16 \\]
+$$
+x=2,\quad a=4,\quad y=16
+$$
 
 反向传播的梯度为：
 
-\\[ \frac{\partial y}{\partial a}=2a=8 \\]
+$$
+\frac{\partial y}{\partial a}=2a=8
+$$
 
-\\[ \frac{\partial y}{\partial x} =\frac{\partial y}{\partial a}\frac{\partial a}{\partial x} =8\times4=32 \\]
+$$
+\frac{\partial y}{\partial x} =\frac{\partial y}{\partial a}\frac{\partial a}{\partial x} =8\times4=32
+$$
 
 计算图与梯度
 
@@ -153,7 +161,22 @@ y().grad = None
 ## 五、自己运行对比一下
 
 ```
-import numpy as npfrom dezero import Variabledef test(retain_grad):    x = Variable(np.array(2.0))    a = x * x    y = a * a    y.backward(retain_grad=retain_grad)    print(f"retain_grad = {retain_grad}")    print("x.grad =", x.grad)    print("a.grad =", a.grad)    print("y.grad =", y.grad)test(False)test(True)
+import numpy as np
+from dezero import Variable
+
+def test(retain_grad):
+    x = Variable(np.array(2.0))
+    a = x * x
+    y = a * a
+    y.backward(retain_grad=retain_grad)
+    print(f"retain_grad = {retain_grad}")
+    print("x.grad =", x.grad)
+    print("a.grad =", a.grad)
+    print("y.grad =", y.grad)
+
+
+test(False)
+test(True)
 ```
 
 输出：
