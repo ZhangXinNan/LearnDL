@@ -100,6 +100,30 @@ class Variable:
                         if output is not None:
                             output.grad = None
 
+    def reshape(self, *shape):
+        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):
+            shape = shape[0]
+        from dezero import functions as F
+        return F.reshape(self, shape)
+
+    def transpose(self, *axes):
+        if len(axes) == 0:
+            axes = None
+        elif len(axes) == 1:
+            if isinstance(axes[0], (tuple, list)) or axes[0] is None:
+                axes = axes[0]
+        from dezero import functions as F
+        return F.transpose(self, axes)
+
+    @property
+    def T(self):
+        from dezero import functions as F
+        return F.transpose(self)
+
+    def sum(self, axis=None, keepdims=False):
+        from dezero import functions as F
+        return F.sum(self, axis, keepdims)
+
 
 class Function(object):
     def __call__(self, *inputs):
@@ -144,11 +168,17 @@ def square(x):
 
 class Add(Function):
     def forward(self, x0, x1):
+        self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 + x1
         return y
 
     def backward(self, gy):
-        return gy, gy
+        gx0, gx1 = gy, gy
+        if self.x0_shape != self.x1_shape:
+            from dezero import functions as F
+            gx0 = F.sum_to(gx0, self.x0_shape)
+            gx1 = F.sum_to(gx1, self.x1_shape)
+        return gx0, gx1
 
 
 def add(x0, x1):
@@ -158,10 +188,17 @@ def add(x0, x1):
 
 class Sub(Function):
     def forward(self, x0, x1):
+        self.x0_shape, self.x1_shape = x0.shape, x1.shape
         y = x0 - x1
         return y
     def backward(self, gy):
-        return gy, -gy
+        gx0 = gy
+        gx1 = -gy
+        if self.x0_shape != self.x1_shape:  # for broadcast
+            from dezero import functions as F
+            gx0 = F.sum_to(gx0, self.x0_shape)
+            gx1 = F.sum_to(gx1, self.x1_shape)
+        return gx0, gx1
 
 
 def sub(x0, x1):
@@ -178,7 +215,13 @@ class Mul(Function):
     def backward(self, gy):
         # x0, x1 = self.inputs[0].data, self.inputs[1].data
         x0, x1 = self.inputs
-        return gy * x1, gy * x0
+        gx0 = gy * x1
+        gx1 = gy * x0
+        if x0.shape != x1.shape:  # for broadcast
+            from dezero import functions as F
+            gx0 = F.sum_to(gx0, x0.shape)
+            gx1 = F.sum_to(gx1, x1.shape)
+        return gx0, gx1
 
 
 def mul(x0, x1):
@@ -202,10 +245,13 @@ class Div(Function):
         y = x0 / x1
         return y
     def backward(self, gy):
-        # x0, x1 = self.inputs[0].data, self.inputs[1].data
         x0, x1 = self.inputs
         gx0 = gy / x1
         gx1 = gy * (-x0 / x1 ** 2)
+        if x0.shape != x1.shape:  # for broadcast
+            from dezero import functions as F
+            gx0 = F.sum_to(gx0, x0.shape)
+            gx1 = F.sum_to(gx1, x1.shape)
         return gx0, gx1
 
 
