@@ -125,6 +125,10 @@ class Variable:
         return F.sum(self, axis, keepdims)
 
 
+class Parameter(Variable):
+    pass
+
+
 class Function(object):
     def __call__(self, *inputs):
         inputs = [as_variable(x) for x in inputs]

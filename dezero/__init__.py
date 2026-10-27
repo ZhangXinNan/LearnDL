@@ -14,6 +14,7 @@ if is_simple_core:
     from dezero.core_simple import add, sub, mul, div, pow
 else:
     from dezero.core import Variable
+    from dezero.core import Parameter
     from dezero.core import Function
     from dezero.core import using_config
     from dezero.core import no_grad
@@ -21,6 +22,10 @@ else:
     from dezero.core import as_variable
     from dezero.core import setup_variable
     from dezero.core import add, sub, mul, div, pow
+    from dezero.layers import Layer
+    from dezero.models import Model
+
+    import dezero.optimizers
 
 
 setup_variable()
