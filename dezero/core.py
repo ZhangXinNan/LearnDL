@@ -3,6 +3,7 @@
 import weakref
 import numpy as np
 import contextlib
+import dezero
 
 
 class Config:
@@ -123,6 +124,14 @@ class Variable:
     def sum(self, axis=None, keepdims=False):
         from dezero import functions as F
         return F.sum(self, axis, keepdims)
+
+    def to_cpu(self):
+        if self.data is not None:
+            self.data = dezero.cuda.as_numpy(self.data)
+
+    def to_gpu(self):
+        if self.data is not None:
+            self.data = dezero.cuda.as_cupy(self.data)
 
 
 class Parameter(Variable):
