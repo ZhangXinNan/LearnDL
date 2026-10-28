@@ -297,7 +297,8 @@ def setup_variable():
     Variable.__truediv__ = div
     Variable.__rtruediv__ = rdiv
     Variable.__pow__ = pow
-
+    import dezero.functions as F
+    Variable.__getitem__ = F.get_item
 
 @contextlib.contextmanager
 def using_config(name, value):

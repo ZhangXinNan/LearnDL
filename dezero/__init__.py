@@ -25,6 +25,7 @@ else:
     from dezero.layers import Layer
     from dezero.models import Model
 
+    import dezero.datasets
     import dezero.optimizers
 
 
