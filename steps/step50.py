@@ -47,15 +47,15 @@ for epoch in range(max_epoch):
 
     sum_loss, sum_acc = 0, 0
     with dezero.no_grad():
-        for x, t in train_loader:
+        for x, t in test_loader:
             # 5. 算出梯度、更新参数
             y = model(x)
             loss = F.softmax_cross_entropy(y, t)
             acc = F.accuracy(y, t)
             sum_loss += float(loss.data) * len(t)
             sum_acc += float(acc.data) * len(t)
-    test_avg_loss = sum_loss / len(train_set)
-    test_avg_acc = sum_acc / len(train_set)
+    test_avg_loss = sum_loss / len(test_set)
+    test_avg_acc = sum_acc / len(test_set)
     print(f"epoch: {epoch + 1}, train loss: {avg_loss:.4f}, accuracy: {avg_acc:.4f}, test loss: {test_avg_loss:.4f}, accuracy: {test_avg_acc:.4f}")
 
 
