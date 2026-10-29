@@ -26,9 +26,13 @@ else:
     from dezero.core import add, sub, mul, div, pow
     from dezero.layers import Layer
     from dezero.models import Model
+    from dezero.datasets import Dataset
+    from dezero.dataloaders import DataLoader
+    from dezero.dataloaders import SeqDataLoader
 
     import dezero.datasets
     import dezero.optimizers
+    import dezero.functions_conv
 
 
 setup_variable()

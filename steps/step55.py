@@ -1,0 +1,16 @@
+
+def get_conv_outsize(input_size, kernel_size, stride, pad):
+    return (input_size + pad * 2 - kernel_size) // stride + 1
+
+
+
+H, W = 4, 4
+KH, KW = 3, 3
+SH, SW = 1, 1,
+PH, PW = 1, 1
+
+OH = get_conv_outsize(H, KH, SH, PH)
+
+print(OH)
+
+
