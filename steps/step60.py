@@ -46,7 +46,7 @@ for epoch in range(max_epoch):
         loss += F.mean_squared_error(y, t)
         count += 1
 
-        if count % bptt_length == 0 or count == seqlen:
+        if count % bptt_length == 0 or count == dataloader.max_iter:
             model.cleargrads()
             loss.backward()
             loss.unchain_backward()

@@ -20,8 +20,11 @@ class Optimizer:
         for f in self.hooks:
             f(params)
 
+        # FreezeParam 会导致优化器报错
+        # 目前优化器先筛选梯度非空的参数，再调用 hooks。
         for param in params:
-            self.update_one(param)
+            if param.grad is not None:
+                self.update_one(param)
 
     def update_one(self, param):
         raise NotImplementedError()

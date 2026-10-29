@@ -231,7 +231,8 @@ class RNN(Layer):
         """
         super().__init__()
         self.x2h = Linear(hidden_size, in_size=in_size)
-        self.h2h = Linear(hidden_size, in_size=in_size, nobias=True)
+        # 原因是隐藏状态 h 的维度始终为 hidden_size，而不是输入 x 的维度。
+        self.h2h = Linear(hidden_size, in_size=hidden_size, nobias=True)
         self.h = None
 
     def reset_state(self):
